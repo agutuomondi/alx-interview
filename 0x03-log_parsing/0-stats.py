@@ -2,6 +2,7 @@
 
 import sys
 
+<<<<<<< HEAD
 
 def print_msg(dict_sc, total_file_size):
     """
@@ -12,6 +13,20 @@ def print_msg(dict_sc, total_file_size):
     Returns:
         Nothing
     """
+=======
+""" Python script that reads stdin line by line and computes metrics:
+  - Input format:
+    <IP Address> - [<date>] "GET /projects/260 HTTP/1.1"
+    <status code> <file size>
+  - After every 10 lines and/or a keyboard interruption (CTRL + C),
+  print these statistics from the beginning:
+    - Total file size: File size for all previous lines
+    - Status codes: Status codes from all previous lines in ascending order
+"""
+
+
+def print_msg(dict_sc, total_file_size):
+>>>>>>> origin/main
 
     print("File size: {}".format(total_file_size))
     for key, val in sorted(dict_sc.items()):
@@ -19,6 +34,7 @@ def print_msg(dict_sc, total_file_size):
             print("{}: {}".format(key, val))
 
 
+<<<<<<< HEAD
 total_file_size = 0
 code = 0
 counter = 0
@@ -28,6 +44,17 @@ dict_sc = {"200": 0, "301": 0, "400": 0,
 try:
     for line in sys.stdin:
         parsed_line = line.split()  # ✄ trimming
+=======
+            total_file_size = 0
+code = 0
+counter = 0
+dict_sc  {"200": 0, "301": 0, "400": 0,
+                "401": 0, "403": 0, "404": 0, "405": 0, "500": 0}
+
+try:
+    for line in sys.stdin:
+        parsed_line = line.split()
+>>>>>>> origin/main
         parsed_line = parsed_line[::-1]  # inverting
 
         if len(parsed_line) > 2:
