@@ -2,49 +2,65 @@
 
 import sys
 
-""" Python script that reads stdin line by line and computes metrics:
-  - Input format:
-    <IP Address> - [<date>] "GET /projects/260 HTTP/1.1"
-    <status code> <file size>
-  - After every 10 lines and/or a keyboard interruption (CTRL + C),
-  print these statistics from the beginning:
-    - Total file size: File size for all previous lines
-    - Status codes: Status codes from all previous lines in ascending order
-"""
 
-
-def print_msg(dict_sc, total_file_size):
-
+def print_statistics(total_file_size, status_codes):
+    """
+    Print metrics including total file size and status code counts.
+    """
     print("File size: {}".format(total_file_size))
-    for key, val in sorted(dict_sc.items()):
-        if val != 0:
-            print("{}: {}".format(key, val))
+    for code, count in sorted(status_codes.items()):
+        if count > 0:
+            print("{}: {}".format(code, count))
 
 
-            total_file_size = 0
-code = 0
-counter = 0
-dict_sc  {"200": 0, "301": 0, "400": 0,
+def parse_line(line):
+
+
+    parts = line.split()  # split line into components
+    # check if parts matches the expected format
+    if len(parts) >= 7:
+        file_size_str = parts[-1]
+        code_str = parts[-2]
+        # check if the status code(code_str) is in the allowed list
+        # of strings (status_codes)
+        if code_str in status_codes:
+            try:
+                # convert file_size to integer or try to, lol
+                file_size = int(file_size_str)
+                return file_size, code_str
+            except ValueError:
+                # Handle case where file size is not an integer
+                return None, None
+    return None, None
+
+
+# initialize variables to store metrics
+total_file_size = 0
+status_codes = {"200": 0, "301": 0, "400": 0,
                 "401": 0, "403": 0, "404": 0, "405": 0, "500": 0}
 
+line_count = 0
+
 try:
+    # loop over each line in stdin
     for line in sys.stdin:
-        parsed_line = line.split()
-        parsed_line = parsed_line[::-1]  # inverting
+        # increment line count to track when to print statistics
+        line_count += 1
+        file_size, code = parse_line(line)
 
-        if len(parsed_line) > 2:
-            counter += 1
+        if file_size is not None and code in status_codes:
+            total_file_size += file_size
+            status_codes[code] += 1
 
-            if counter <= 10:
-                total_file_size += int(parsed_line[0])  # file size
-                code = parsed_line[1]  # status code
+        if line_count % 10 == 0:
+            print_statistics(total_file_size, status_codes)
+            line_count = 0
 
-                if (code in dict_sc.keys()):
-                    dict_sc[code] += 1
-
-            if (counter == 10):
-                print_msg(dict_sc, total_file_size)
-                counter = 0
+except KeyboardInterrupt:
+    # Handle keyboard interruption
+    print_statistics(total_file_size, status_codes)
+    sys.exit(0)
 
 finally:
-    print_msg(dict_sc, total_file_size)
+    # Ensure statistics are printed at the end of input
+    print_statistics(total_file_size, status_codes)
