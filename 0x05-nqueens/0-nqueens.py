@@ -6,6 +6,7 @@ Solution to the N-Queens problem.
 
 import sys
 
+
 def backtrack(row, n, cols, pos_diags, neg_diags, board):
     """
     Backtrack function to solve N-Queens problem.
@@ -46,6 +47,7 @@ def backtrack(row, n, cols, pos_diags, neg_diags, board):
         neg_diags.remove(row - col)
         board[row][col] = 0
 
+
 def nqueens(n):
     """
     Solve the N-Queens problem.
@@ -62,6 +64,7 @@ def nqueens(n):
     board = [[0] * n for _ in range(n)]
 
     backtrack(0, n, cols, pos_diags, neg_diags, board)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
