@@ -10,11 +10,12 @@ def rotate_2d_matrix(matrix):
         matrix (list[[list]]): a matrix
     """
     n = len(matrix)
-    for i in range(n // 2):
-        for j in range(i, n - i - 1):
-            # Rotate elements in place using tuple unpacking
-            (matrix[i][j], matrix[j][n - 1 - i],
-             matrix[n - 1 - i][n - 1 - j], matrix[n - 1 - j][i]) = (
-                matrix[n - 1 - j][i], matrix[i][j],
-                matrix[j][n - 1 - i], matrix[n - 1 - i][n - 1 - j])
-
+    for i in range(int(n / 2)):
+        y = (n - i - 1)
+        for j in range(i, y):
+            x = (n - 1 - j)
+            tmp = matrix[i][j]
+            matrix[i][j] = matrix[x][i]
+            matrix[x][i] = matrix[y][x]
+            matrix[y][x] = matrix[j][y]
+            matrix[j][y] = tmp
